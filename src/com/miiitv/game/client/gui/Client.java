@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,6 +20,7 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 import com.miiicasa.game.account.Account;
+import com.miiitv.game.client.Api;
 import com.miiitv.game.client.App;
 import com.miiitv.game.client.Logger;
 import com.miiitv.game.client.R;
@@ -28,14 +29,12 @@ public class Client extends Activity implements OnClickListener {
 
 	private final static String	TAG			= "Client";
 	private Context				mContext	= null;
-	private App					mApp		= null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.client);
 		mContext = this;
-		mApp = (App) getApplication();
 
 		((ImageView) findViewById(R.id.client_login)).setOnClickListener(this);
 		ImageView loadingTop = (ImageView) findViewById(R.id.client_load_top);
@@ -61,7 +60,13 @@ public class Client extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.client_login:
-			login();
+			if ( ! App.getInstance().getAccount().isSyncUser()) {
+				login();
+			} else {
+				Intent intent = new Intent(mContext, Bank.class);
+				startActivity(intent);
+				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+			}
 			break;
 		}
 	}
@@ -94,8 +99,6 @@ public class Client extends Activity implements OnClickListener {
 						}
 					});
 				} else if (state.equals(SessionState.CLOSED_LOGIN_FAILED)) {
-					// isRunLogin = false;
-					// StorageCache.getInstance().clearLoginData();
 					Toast.makeText(mContext, "Fail Facebook", Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -130,21 +133,21 @@ public class Client extends Activity implements OnClickListener {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			boolean flag = false;
-			Account account;
 			if (isCancelled()) {
 				return flag;
 			}
 			username = params[0];
 			facebookID = params[1];
 			facebookTok = params[2];
-
 			if (TextUtils.isEmpty(username) || TextUtils.isEmpty(facebookID) || TextUtils.isEmpty(facebookTok))
 				return flag;
-			account = mApp.getAccount();
+			Account account = App.getInstance().getAccount();
 			account.setFacebookID(facebookID);
 			account.setFacebookToken(facebookTok);
-
-			return null;
+			flag = Api.getInstance().syncUser(facebookID, facebookTok);
+			if (flag)
+				account.setSyncUser(true);
+			return flag;
 		}
 
 		@Override

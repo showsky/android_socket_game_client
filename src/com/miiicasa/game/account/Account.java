@@ -53,4 +53,12 @@ public class Account {
 	public boolean isSyncUser() {
 		return setting.getBoolean(SYNC_USER, false);
 	}
+	
+	public boolean isFacebookAuth() {
+		if (getFacebookToken() == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 }
