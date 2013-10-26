@@ -2,6 +2,8 @@ package com.miiitv.game.client;
 
 import org.teleal.cling.android.AndroidUpnpService;
 import org.teleal.cling.android.AndroidUpnpServiceImpl;
+import org.teleal.cling.model.ValidationException;
+import org.teleal.cling.registry.RegistrationException;
 
 import android.app.Application;
 import android.content.ComponentName;
@@ -14,6 +16,7 @@ import android.os.IBinder;
 import com.miiicasa.game.account.Account;
 import com.miiitv.game.client.config.Config;
 import com.miiitv.game.upnp.BrowseRegistryListener;
+import com.miiitv.game.utils.UpnpUtils;
 
 public class App extends Application {
 	
@@ -32,8 +35,18 @@ public class App extends Application {
 		
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
+			Logger.i(TAG, "onServiceConnected()");
 			upnpService = (AndroidUpnpService) service;
 			upnpService.getRegistry().addListener(registryListener);
+			
+			//TODO:
+			try {
+				upnpService.getRegistry().addDevice(UpnpUtils.createDevice("123456"));
+			} catch (RegistrationException e) {
+				e.printStackTrace();
+			} catch (ValidationException e) {
+				e.printStackTrace();
+			}
 		}
 	};
 	
@@ -52,8 +65,10 @@ public class App extends Application {
 	}
 	
 	private void initHandler() {
-		if (handlerThread == null)
+		if (handlerThread == null) {
 			handlerThread = new HandlerThread(TAG);
+			handlerThread.start();
+		}
 		if (eventHandler == null)
 			eventHandler = new EventHandler(handlerThread);
 	}
