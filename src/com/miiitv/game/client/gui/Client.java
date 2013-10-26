@@ -2,6 +2,7 @@ package com.miiitv.game.client.gui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +22,10 @@ public class Client extends Activity implements OnClickListener {
 		setContentView(R.layout.client);
 		mContext = this;
 		((ImageView) findViewById(R.id.client_login)).setOnClickListener(this);
+		ImageView loadingTop = (ImageView) findViewById(R.id.client_load_top);
+		((AnimationDrawable) loadingTop.getDrawable()).start();
+		ImageView loadingBottom = (ImageView) findViewById(R.id.client_load_buttom);
+		((AnimationDrawable) loadingBottom.getDrawable()).start();
 	}
 	
 	@Override
