@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/loading_1" />
+        android:src="@drawable/prepare" />
     <ImageView
         android:id="@+id/client_load_buttom"
         android:layout_width="wrap_content"
@@ -24,5 +24,5 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
-        android:src="@drawable/loading_1" />
+        android:src="@drawable/prepare" />
 </RelativeLayout>
