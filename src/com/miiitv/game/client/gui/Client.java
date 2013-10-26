@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -37,6 +38,10 @@ public class Client extends Activity implements OnClickListener {
 		mApp = (App) getApplication();
 
 		((ImageView) findViewById(R.id.client_login)).setOnClickListener(this);
+		ImageView loadingTop = (ImageView) findViewById(R.id.client_load_top);
+		((AnimationDrawable) loadingTop.getDrawable()).start();
+		ImageView loadingBottom = (ImageView) findViewById(R.id.client_load_buttom);
+		((AnimationDrawable) loadingBottom.getDrawable()).start();
 	}
 
 	@Override

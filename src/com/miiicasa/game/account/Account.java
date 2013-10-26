@@ -8,6 +8,7 @@ public class Account {
 	private final static String TAG = "Account";
 	private final static String FACEBOOK_ID = "facebook_id";
 	private final static String FACEBOOK_TOKEN = "facebook_token";
+	private final static String SYNC_USER = "sync_user";
 	public String facebookID = null;
 	public String facebookToken = null;
 	public String facebookName = null;
@@ -42,5 +43,14 @@ public class Account {
 		if (facebookToken == null)
 			return setting.getString(FACEBOOK_TOKEN, null);
 		return facebookToken;
+	}
+	
+	public void setSyncUser(boolean isSyncUser) {
+		editor.putBoolean(SYNC_USER, isSyncUser);
+		editor.commit();
+	}
+	
+	public boolean isSyncUser() {
+		return setting.getBoolean(SYNC_USER, false);
 	}
 }
