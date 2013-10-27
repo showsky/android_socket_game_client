@@ -2,9 +2,6 @@ package com.miiitv.game.client;
 
 import org.teleal.cling.android.AndroidUpnpService;
 import org.teleal.cling.android.AndroidUpnpServiceImpl;
-import org.teleal.cling.model.ValidationException;
-import org.teleal.cling.registry.RegistrationException;
-
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,38 +12,46 @@ import android.os.IBinder;
 
 import com.miiicasa.game.account.Account;
 import com.miiitv.game.client.config.Config;
+import com.miiitv.game.service.ClientService;
 import com.miiitv.game.upnp.BrowseRegistryListener;
-import com.miiitv.game.utils.UpnpUtils;
 
 public class App extends Application {
 	
 	private final static String TAG = "App";
 	private static App instance = null;
 	private Account account = null;
-	private AndroidUpnpService upnpService = null;
+	public AndroidUpnpService upnpService = null;
 	private HandlerThread handlerThread = null;
-	private EventHandler eventHandler = null;
+	public EventHandler eventHandler = null;
+	public ClientService clientService = null;
 	private BrowseRegistryListener registryListener = new BrowseRegistryListener();
-	private ServiceConnection serviceConnection = new ServiceConnection() {
+	private ServiceConnection upnpServiceConnection = new ServiceConnection() {
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
+			Logger.i(TAG, "Upnp onServiceDisconnected()");
 			upnpService = null;
 		}
 		
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			Logger.i(TAG, "onServiceConnected()");
+			Logger.i(TAG, "Upnp onServiceConnected()");
 			upnpService = (AndroidUpnpService) service;
 			upnpService.getRegistry().addListener(registryListener);
-			
-			//TODO:
-			try {
-				upnpService.getRegistry().addDevice(UpnpUtils.createDevice("123456"));
-			} catch (RegistrationException e) {
-				e.printStackTrace();
-			} catch (ValidationException e) {
-				e.printStackTrace();
-			}
+		}
+	};
+	private ServiceConnection clientServiceConnection = new ServiceConnection() {
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			Logger.i(TAG, "Client onServiceDisconnected()");
+			if (clientService.isConnect)
+				clientService.disConnectServer();
+			clientService = null;
+		}
+		
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			Logger.i(TAG, "Client onServiceConnected()");
+			clientService = ((ClientService.LocalBinder) service).getService();
 		}
 	};
 	
@@ -60,9 +65,16 @@ public class App extends Application {
 	
 	private void initUpnp() {
 		Logger.d(TAG, "Bind service: AndroidUpnpServiceImpl");
-		Intent intent = new Intent(this, AndroidUpnpServiceImpl.class);
-		bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+		Intent intent = new Intent(getApplicationContext(), AndroidUpnpServiceImpl.class);
+		bindService(intent, upnpServiceConnection, Context.BIND_AUTO_CREATE);
 	}
+	
+	private void initClientService() {
+		Logger.d(TAG, "Bind service: ClientService");
+		Intent intent = new Intent(getApplicationContext(), ClientService.class);
+		bindService(intent, clientServiceConnection, Context.BIND_AUTO_CREATE);
+	}
+	
 	
 	private void initHandler() {
 		if (handlerThread == null) {
@@ -79,6 +91,7 @@ public class App extends Application {
 		Logger.d(TAG, "onCreate()");
 		instance = this;
 		initUpnp();
+		initClientService();
 		initHandler();
 	}
 	
@@ -86,5 +99,17 @@ public class App extends Application {
 		if (account == null)
 			account = new Account(getApplicationContext());
 		return account;
+	}
+	
+	public void closeApp() {
+		Logger.e(TAG, "Close App");
+		if (upnpService != null) {
+			unbindService(upnpServiceConnection);
+			upnpService = null;
+		}
+		if (clientService != null) {
+			clientService.unbindService(clientServiceConnection);
+			clientService = null;
+		}
 	}
 }

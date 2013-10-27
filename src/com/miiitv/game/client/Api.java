@@ -23,6 +23,7 @@ public class Api {
 	private final static String API = "/api/";
 	private final static String API_SYNC_USER = API + "sync_user";
 	private final static String API_BANK = API + "get_rank";
+	public String serverAddress = null;
 	private static Api instance = null;
 	
 	private Api() {

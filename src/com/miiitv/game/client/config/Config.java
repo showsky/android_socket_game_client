@@ -9,7 +9,7 @@ public class Config {
 	
 	public final static String YAHOO = "/yahoo_hackathon_api";
 	public final static String API_URL = "http://jexpoyi.com" + YAHOO;
-	public final static int PORT = 99999;
+	public final static int PORT = 2222;
 	
 	public final static String SERVER_IP = "192.168.0.100";
 	

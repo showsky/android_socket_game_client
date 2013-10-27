@@ -5,6 +5,10 @@ import org.teleal.cling.model.meta.RemoteDevice;
 import org.teleal.cling.registry.Registry;
 import org.teleal.cling.registry.RegistryListener;
 
+import android.os.Message;
+
+import com.miiitv.game.client.App;
+import com.miiitv.game.client.EventType;
 import com.miiitv.game.client.Logger;
 
 public class BrowseRegistryListener implements RegistryListener {
@@ -17,40 +21,47 @@ public class BrowseRegistryListener implements RegistryListener {
 	}
 
 	@Override
-	public void beforeShutdown(Registry arg0) {
+	public void beforeShutdown(Registry reg) {
 		Logger.i(TAG, "beforeShutdown()");
 	}
 
 	@Override
-	public void localDeviceAdded(Registry arg0, LocalDevice device) {
+	public void localDeviceAdded(Registry reg, LocalDevice device) {
 		Logger.i(TAG, "localDeviceAdded() ", device.getDisplayString());
 	}
 
 	@Override
-	public void localDeviceRemoved(Registry arg0, LocalDevice device) {
+	public void localDeviceRemoved(Registry reg, LocalDevice device) {
 		Logger.i(TAG, "localDeviceRemoved() ", device.getDisplayString());
 	}
 
 	@Override
-	public void remoteDeviceAdded(Registry arg0, RemoteDevice device) {
-		Logger.i(TAG, "remoteDeviceAdded() ", device.getDisplayString());
+	public void remoteDeviceAdded(Registry reg, RemoteDevice device) {
+		Logger.i(TAG, "remoteDeviceAdded() ", device.getDisplayString(), " ip: ", device.getIdentity().getDescriptorURL().getHost());
+		String serverAddress = device.getIdentity().getDescriptorURL().getHost();
+		Message message = App.getInstance().eventHandler.obtainMessage();
+		message.what = EventType.TYPE_CONNECT;
+		message.obj = String.valueOf(serverAddress);
+		message.sendToTarget();
+		
+		//reg.shutdown();
 	}
 
 	@Override
-	public void remoteDeviceDiscoveryFailed(Registry arg0, RemoteDevice device, Exception arg2) {
+	public void remoteDeviceDiscoveryFailed(Registry reg, RemoteDevice device, Exception arg2) {
 	}
 
 	@Override
-	public void remoteDeviceDiscoveryStarted(Registry arg0, RemoteDevice device) {
+	public void remoteDeviceDiscoveryStarted(Registry reg, RemoteDevice device) {
 	}
 
 	@Override
-	public void remoteDeviceRemoved(Registry arg0, RemoteDevice device) {
+	public void remoteDeviceRemoved(Registry reg, RemoteDevice device) {
 		Logger.i(TAG, "remoteDeviceRemoved() ", device.getDisplayString());
 	}
 
 	@Override
-	public void remoteDeviceUpdated(Registry arg0, RemoteDevice device) {
+	public void remoteDeviceUpdated(Registry reg, RemoteDevice device) {
 		Logger.i(TAG, "remoteDeviceUpdated() ", device.getDisplayString());
 	}
 }

@@ -15,4 +15,8 @@
 	
 	<string name="rank_win"> 挑戰勝利</string>
 	<string name="rank_lost"> 挑戰失敗</string>
+	<string name="rank_sync_title">連線</string>
+	<string name="rank_sync_message">尋找主機中</string>
+	<string name="rank_sync_success">進入遊戲</string>
+	<string name="rank_sync_error">尋找失敗</string>
 </resources>

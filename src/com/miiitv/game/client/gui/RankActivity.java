@@ -1,9 +1,12 @@
 package com.miiitv.game.client.gui;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -14,7 +17,7 @@ import com.miiitv.game.client.App;
 import com.miiitv.game.client.Logger;
 import com.miiitv.game.client.R;
 
-public class RankActivity extends Activity implements OnClickListener {
+public class RankActivity extends Activity implements OnClickListener, ConnectListener {
 	
 	private final static String TAG = "Bank";
 	private Context mContext = null;
@@ -56,6 +59,15 @@ public class RankActivity extends Activity implements OnClickListener {
 	}
 	
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Logger.d(TAG, "KeyEvent back");
+			
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
 	protected void onPause() {
 		super.onPause();
 		Logger.i(TAG, "onPause");
@@ -74,7 +86,46 @@ public class RankActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.rank_start:
+				//TODO:
 				break;
+		}
+	}
+
+	@Override
+	public void onSuccess() {
+		Logger.i(TAG, "onSuccess()");
+	}
+
+	@Override
+	public void onFail() {
+		Logger.i(TAG, "onFail()");
+	}
+	
+	class PrePare extends AsyncTask<Void, Void, Boolean> {
+		
+		private ProgressDialog loading = null;
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			loading = new ProgressDialog(mContext);
+			loading.setTitle(R.string.rank_sync_title);
+			loading.setMessage(getString(R.string.rank_sync_message));
+			loading.setCancelable(false);
+			loading.setCanceledOnTouchOutside(false);
+			loading.show();
+		}
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			boolean flag = true;
+			App.getInstance().clientService.startUpnp(RankActivity.this);
+			return flag;
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
 		}
 	}
 }
