@@ -52,7 +52,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 		animTop.start();
 		animButtom.start();
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -116,7 +116,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 	}
 
 	class Login extends AsyncTask<String, Void, Boolean> {
-		
+
 		private ProgressDialog	load		= null;
 		private String			username	= null;
 		private String			facebookID	= null;
@@ -170,7 +170,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 				flag = true;
 				account.rank = rank;
 			}
-			
+
 			return flag;
 		}
 

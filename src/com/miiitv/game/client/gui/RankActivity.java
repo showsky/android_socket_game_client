@@ -15,14 +15,14 @@ import com.miiitv.game.client.Logger;
 import com.miiitv.game.client.R;
 
 public class RankActivity extends Activity implements OnClickListener {
-	
+
 	private final static String TAG = "Bank";
 	private Context mContext = null;
 	private TextView winTextView = null;
 	private TextView loseTextView = null;
 	private AnimationDrawable animTop = null;
 	private AnimationDrawable animButtom = null;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,7 +38,7 @@ public class RankActivity extends Activity implements OnClickListener {
 		((TextView) findViewById(R.id.rank_start)).setOnClickListener(this);
 		updateRank();
 	}
-	
+
 	private void updateRank() {
 		Rank rank = App.getInstance().getAccount().rank;
 		if (rank == null)
@@ -46,7 +46,7 @@ public class RankActivity extends Activity implements OnClickListener {
 		winTextView.setText(rank.win + getString(R.string.rank_win));
 		loseTextView.setText(rank.lost + getString(R.string.rank_lost));
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -54,7 +54,7 @@ public class RankActivity extends Activity implements OnClickListener {
 		animTop.start();
 		animButtom.start();
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -62,7 +62,7 @@ public class RankActivity extends Activity implements OnClickListener {
 		animTop.stop();
 		animButtom.stop();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
