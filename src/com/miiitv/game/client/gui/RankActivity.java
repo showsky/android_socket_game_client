@@ -2,6 +2,7 @@ package com.miiitv.game.client.gui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.miiicasa.game.account.Account.Rank;
 import com.miiitv.game.client.App;
 import com.miiitv.game.client.Logger;
 import com.miiitv.game.client.R;
+import com.miiitv.game.client.config.Config;
 
 public class RankActivity extends Activity implements OnClickListener {
 
@@ -29,12 +31,18 @@ public class RankActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.rank);
 		Logger.i(TAG, "onCreate");
 		mContext = this;
+
 		ImageView loadingTop = (ImageView) findViewById(R.id.rank_load_top);
 		ImageView loadingBottom = (ImageView) findViewById(R.id.rank_load_buttom);
 		animButtom = (AnimationDrawable) loadingBottom.getDrawable();
 		animTop = (AnimationDrawable) loadingTop.getDrawable();
+
 		winTextView = (TextView) findViewById(R.id.rank_win);
 		loseTextView = (TextView) findViewById(R.id.rank_lose);
+		Typeface font = Typeface.createFromAsset(getAssets(), Config.FONT_FACE);
+		winTextView.setTypeface(font);
+		loseTextView.setTypeface(font);
+
 		((TextView) findViewById(R.id.rank_start)).setOnClickListener(this);
 		updateRank();
 	}
