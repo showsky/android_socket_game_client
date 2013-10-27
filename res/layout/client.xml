@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_bg" >
+
     <ImageView
         android:id="@+id/client_login"
         android:layout_width="wrap_content"
@@ -10,18 +11,23 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:src="@drawable/login_button" />
+
     <ImageView
         android:id="@+id/client_load_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
         android:src="@drawable/prepare" />
+
     <ImageView
         android:id="@+id/client_load_buttom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
         android:src="@drawable/prepare" />
+
 </RelativeLayout>

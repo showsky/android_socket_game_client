@@ -8,7 +8,7 @@ import com.miiitv.game.client.Logger;
 
 public class StartActivity extends Activity {
 	
-	private final static String TAG = "Start";
+	private final static String TAG = "StartActivity";
 	private Context mContext = null;
 	
 	@Override
