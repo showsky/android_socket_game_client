@@ -7,5 +7,12 @@
     <string name="app_name">game client</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-
+    
+    <string name="client_login_title">Login</string>
+	<string name="client_login_message">資料讀取中</string>
+	<string name="client_login_success">Login 成功</string>
+	<string name="client_login_error">Login error</string>
+	
+	<string name="rank_win"> 挑戰勝利</string>
+	<string name="rank_lost"> 挑戰失敗</string>
 </resources>

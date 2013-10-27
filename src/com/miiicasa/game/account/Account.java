@@ -6,15 +6,27 @@ import android.content.SharedPreferences;
 public class Account {
 
 	private final static String TAG = "Account";
-	private final static String FACEBOOK_ID = "facebook_id";
-	private final static String FACEBOOK_TOKEN = "facebook_token";
-	private final static String SYNC_USER = "sync_user";
+	private final static String CONFIG_FACEBOOK_ID = "facebook_id";
+	private final static String CONFIG_FACEBOOK_TOKEN = "facebook_token";
+	private final static String CONFIG_FACEBOOK_NAME = "facebook_name";
+	private final static String CONFIG_SYNC_USER = "sync_user";
+	public final static String WIN = "win";
+	public final static String LOSE = "lose";
+	public final static String SCORE = "score";
 	public String facebookID = null;
 	public String facebookToken = null;
 	public String facebookName = null;
 	public String facebookAvatarURL = null;
 	private SharedPreferences setting = null;
 	private SharedPreferences.Editor editor = null;
+	public Rank rank = null;
+	
+	public static class Rank {
+	
+		public int win = 0;
+		public int lost = 0;
+		public int score = 0;
+	}
 	
 	public Account(Context context) {
 		setting = context.getSharedPreferences(TAG, 0);
@@ -23,35 +35,47 @@ public class Account {
 	
 	public void setFacebookID(String facebookID) {
 		this.facebookID = facebookID;
-		editor.putString(FACEBOOK_ID, facebookID);
-		editor.commit();
+		editor.putString(CONFIG_FACEBOOK_ID, facebookID);
 	}
 	
 	public void setFacebookToken(String facebokToken) {
 		this.facebookToken = facebokToken;
-		editor.putString(FACEBOOK_TOKEN, facebokToken);
-		editor.commit();
+		editor.putString(CONFIG_FACEBOOK_TOKEN, facebokToken);
 	}
 	
 	public String getFacebookID() {
 		if (facebookID == null)
-			return setting.getString(FACEBOOK_ID, null);
+			return setting.getString(CONFIG_FACEBOOK_ID, null);
 		return facebookID;
 	}
 	
 	public String getFacebookToken() {
 		if (facebookToken == null)
-			return setting.getString(FACEBOOK_TOKEN, null);
+			return setting.getString(CONFIG_FACEBOOK_TOKEN, null);
 		return facebookToken;
 	}
 	
-	public void setSyncUser(boolean isSyncUser) {
-		editor.putBoolean(SYNC_USER, isSyncUser);
+	public String getFacebokName() {
+		if (facebookName == null)
+			return setting.getString(CONFIG_FACEBOOK_NAME, null);
+		return facebookName;
+	}
+	
+	public void setFacebookName(String facebookName) {
+		this.facebookName = facebookName;
+		editor.putString(CONFIG_FACEBOOK_NAME, facebookName);
+	}
+	
+	public void save() {
 		editor.commit();
 	}
 	
+	public void setSyncUser(boolean isSyncUser) {
+		editor.putBoolean(CONFIG_SYNC_USER, isSyncUser);
+	}
+	
 	public boolean isSyncUser() {
-		return setting.getBoolean(SYNC_USER, false);
+		return setting.getBoolean(CONFIG_SYNC_USER, false);
 	}
 	
 	public boolean isFacebookAuth() {

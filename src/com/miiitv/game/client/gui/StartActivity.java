@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.miiitv.game.client.Logger;
 
-public class Start extends Activity {
+public class StartActivity extends Activity {
 	
 	private final static String TAG = "Start";
 	private Context mContext = null;
@@ -15,6 +15,7 @@ public class Start extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Logger.i(TAG, "onCreate");
+		mContext = this;
 	}
 	
 	@Override
@@ -27,5 +28,6 @@ public class Start extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		Logger.i(TAG, "onDestory");
+		mContext = null;
 	}
 }

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -20,15 +19,18 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 import com.miiicasa.game.account.Account;
+import com.miiicasa.game.account.Account.Rank;
 import com.miiitv.game.client.Api;
 import com.miiitv.game.client.App;
 import com.miiitv.game.client.Logger;
 import com.miiitv.game.client.R;
 
-public class Client extends Activity implements OnClickListener {
+public class ClientActivity extends Activity implements OnClickListener {
 
-	private final static String	TAG			= "Client";
-	private Context				mContext	= null;
+	private final static String	TAG = "Client";
+	private Context mContext = null;
+	private AnimationDrawable animTop = null;
+	private AnimationDrawable animButtom = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +40,25 @@ public class Client extends Activity implements OnClickListener {
 
 		((ImageView) findViewById(R.id.client_login)).setOnClickListener(this);
 		ImageView loadingTop = (ImageView) findViewById(R.id.client_load_top);
-		((AnimationDrawable) loadingTop.getDrawable()).start();
 		ImageView loadingBottom = (ImageView) findViewById(R.id.client_load_buttom);
-		((AnimationDrawable) loadingBottom.getDrawable()).start();
+		animButtom = (AnimationDrawable) loadingBottom.getDrawable();
+		animTop = (AnimationDrawable) loadingTop.getDrawable();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		Logger.i(TAG, "onResume");
+		animTop.start();
+		animButtom.start();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Logger.i(TAG, "onPause");
+		animTop.stop();
+		animButtom.stop();
 	}
 
 	@Override
@@ -63,9 +75,7 @@ public class Client extends Activity implements OnClickListener {
 			if ( ! App.getInstance().getAccount().isSyncUser()) {
 				login();
 			} else {
-				Intent intent = new Intent(mContext, Bank.class);
-				startActivity(intent);
-				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+				new Login().execute(null, null, null);
 			}
 			break;
 		}
@@ -106,6 +116,7 @@ public class Client extends Activity implements OnClickListener {
 	}
 
 	class Login extends AsyncTask<String, Void, Boolean> {
+		
 		private ProgressDialog	load		= null;
 		private String			username	= null;
 		private String			facebookID	= null;
@@ -115,6 +126,8 @@ public class Client extends Activity implements OnClickListener {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			load = new ProgressDialog(mContext);
+			load.setTitle(R.string.client_login_title);
+			load.setMessage(getString(R.string.client_login_message));
 			load.setCancelable(false);
 			load.setCanceledOnTouchOutside(false);
 			load.show();
@@ -139,14 +152,25 @@ public class Client extends Activity implements OnClickListener {
 			username = params[0];
 			facebookID = params[1];
 			facebookTok = params[2];
-			if (TextUtils.isEmpty(username) || TextUtils.isEmpty(facebookID) || TextUtils.isEmpty(facebookTok))
-				return flag;
 			Account account = App.getInstance().getAccount();
-			account.setFacebookID(facebookID);
-			account.setFacebookToken(facebookTok);
-			flag = Api.getInstance().syncUser(facebookID, facebookTok);
-			if (flag)
-				account.setSyncUser(true);
+			if ( ! account.isSyncUser()) {
+				account.setFacebookID(facebookID);
+				account.setFacebookToken(facebookTok);
+				account.setFacebookName(username);
+				flag = Api.getInstance().syncUser(facebookID, facebookTok);
+				if (flag) {
+					account.setSyncUser(true);
+				} else {
+					return flag;
+				}
+				account.save();
+			}
+			Rank rank = Api.getInstance().getRank(account.getFacebookID());
+			if (rank != null) {
+				flag = true;
+				account.rank = rank;
+			}
+			
 			return flag;
 		}
 
@@ -156,6 +180,15 @@ public class Client extends Activity implements OnClickListener {
 			if (load != null) {
 				load.dismiss();
 				load = null;
+			}
+			if (result) {
+				Intent intent = new Intent(mContext, RankActivity.class);
+				startActivity(intent);
+				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+				finish();
+				Toast.makeText(mContext, R.string.client_login_success, Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(mContext, R.string.client_login_error, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}

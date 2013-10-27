@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/profile_bg" >
+    <ImageView
+        android:id="@+id/rank_load_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/prepare" />
+    <ImageView
+        android:id="@+id/rank_load_buttom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/prepare" />
+    <ImageView
+        android:id="@+id/rank_avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/rank_load_top"
+        android:src="@drawable/ico_avatar" />
+    <TextView
+        android:id="@+id/rank_win"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/rank_avatar"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ico_section"
+        android:gravity="center"
+        android:text="11 勝" />
+    <TextView
+        android:id="@+id/rank_start"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/rank_lose"
+        android:layout_marginTop="10dp"
+        android:layout_alignLeft="@+id/rank_win"
+        android:background="@drawable/ico_section"
+        android:gravity="center"
+        android:text="Start" />
+    <TextView
+        android:id="@+id/rank_lose"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/rank_win"
+        android:layout_marginTop="10dp"
+        android:layout_alignLeft="@+id/rank_start"
+        android:background="@drawable/ico_section"
+        android:gravity="center"
+        android:text="11 輸" />
+</RelativeLayout>
