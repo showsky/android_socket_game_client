@@ -103,6 +103,11 @@ public class App extends Application {
 	
 	public void closeApp() {
 		Logger.e(TAG, "Close App");
+		if (handlerThread != null) {
+			handlerThread.quit();
+			handlerThread = null;
+		}
+		eventHandler = null;
 		if (upnpService != null) {
 			unbindService(upnpServiceConnection);
 			upnpService = null;
