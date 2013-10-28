@@ -13,8 +13,8 @@
 	<string name="client_login_success">Login 成功</string>
 	<string name="client_login_error">Login error</string>
 	
-	<string name="rank_win"> 挑戰勝利</string>
-	<string name="rank_lost"> 挑戰失敗</string>
+	<string name="rank_win">\t挑戰勝利</string>
+	<string name="rank_lost">\t挑戰失敗</string>
 	<string name="rank_sync_title">連線</string>
 	<string name="rank_sync_message">尋找主機中</string>
 	<string name="rank_sync_success">進入遊戲</string>

@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.widget.ProfilePictureView;
 import com.miiicasa.game.account.Account.Rank;
 import com.miiitv.game.client.App;
 import com.miiitv.game.client.Logger;
@@ -25,6 +26,7 @@ public class RankActivity extends Activity implements OnClickListener, ConnectLi
 	private Context mContext = null;
 	private TextView winTextView = null;
 	private TextView loseTextView = null;
+	private ProfilePictureView facebookAvatar = null;
 	private AnimationDrawable animTop = null;
 	private AnimationDrawable animButtom = null;
 
@@ -34,6 +36,8 @@ public class RankActivity extends Activity implements OnClickListener, ConnectLi
 		setContentView(R.layout.rank);
 		Logger.i(TAG, "onCreate");
 		mContext = this;
+		
+		facebookAvatar = (ProfilePictureView) findViewById(R.id.rank_facebook_avatar);
 
 		ImageView loadingTop = (ImageView) findViewById(R.id.rank_load_top);
 		ImageView loadingBottom = (ImageView) findViewById(R.id.rank_load_buttom);
@@ -54,6 +58,8 @@ public class RankActivity extends Activity implements OnClickListener, ConnectLi
 		Rank rank = App.getInstance().getAccount().rank;
 		if (rank == null)
 			return;
+		facebookAvatar.setCropped(true);
+		facebookAvatar.setProfileId(App.getInstance().getAccount().getFacebookID());
 		winTextView.setText(rank.win + getString(R.string.rank_win));
 		loseTextView.setText(rank.lost + getString(R.string.rank_lost));
 	}

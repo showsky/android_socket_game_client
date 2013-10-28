@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/profile_bg" >
+    android:background="@drawable/profile_bg"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto" >
 
     <ImageView
         android:id="@+id/rank_load_top"
@@ -23,17 +24,29 @@
         android:adjustViewBounds="true"
         android:src="@drawable/prepare" />
 
-    <ImageView
+    <FrameLayout 
         android:id="@+id/rank_avatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/rank_load_top"
-        android:layout_marginBottom="20dp"
-        android:adjustViewBounds="true"
-        android:src="@drawable/ico_avatar" />
+        android:layout_marginBottom="20dp">
+        <ImageView
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_alignParentLeft="true"
+	        android:adjustViewBounds="true"
+	        android:src="@drawable/ico_avatar" />
+        <com.facebook.widget.ProfilePictureView
+            android:layout_gravity="center"
+       		android:id="@+id/rank_facebook_avatar"
+       		android:layout_height="wrap_content"
+       		android:layout_width="wrap_content"
+       		android:adjustViewBounds="true"
+       		facebook:preset_size="large" />
+    </FrameLayout>
 
-    <TextView
+    <TextView style="@style/rank"
         android:id="@+id/rank_win"
         android:layout_width="300dp"
         android:layout_height="60dp"
@@ -43,8 +56,7 @@
         android:background="@drawable/ico_section"
         android:gravity="center"
         android:text="11 勝" />
-
-    <TextView
+    <TextView style="@style/rank"
         android:id="@+id/rank_start"
         android:layout_width="300dp"
         android:layout_height="60dp"
@@ -55,8 +67,7 @@
         android:background="@drawable/ico_section"
         android:gravity="center"
         android:text="Start" />
-
-    <TextView
+    <TextView style="@style/rank"
         android:id="@+id/rank_lose"
         android:layout_width="300dp"
         android:layout_height="60dp"
@@ -67,5 +78,4 @@
         android:background="@drawable/ico_section"
         android:gravity="center"
         android:text="11 輸" />
-
 </RelativeLayout>
