@@ -8,10 +8,10 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+import org.teleal.cling.android.AndroidUpnpService;
 import org.teleal.cling.model.message.header.DeviceTypeHeader;
 import org.teleal.cling.model.types.UDADeviceType;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Intent;
@@ -35,8 +35,7 @@ public class ClientService extends Service {
 	public boolean isConnect = false;
 	private Connect connect = null;
 	public ProgressDialog loading = null;
-	private Activity activity = null;
-	private ConnectListener listener = null;
+	public ConnectListener listener = null;
 	
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -61,12 +60,13 @@ public class ClientService extends Service {
 		connect.start();
 	}
 	
-	public void startUpnp(ConnectListener listener) {
+	public void startUpnp() {
 		if (App.getInstance().upnpService != null) {
 			Logger.d(TAG, "Start Upnp");
-			this.listener = listener;
+			AndroidUpnpService upnpService = App.getInstance().upnpService;
+			upnpService.getRegistry().addListener(App.getInstance().registryListener);
 			UDADeviceType udaType = new UDADeviceType(UpnpConfig.TYPE_NAME, UpnpConfig.TYPE_VERSION);
-			App.getInstance().upnpService.getControlPoint().search(new DeviceTypeHeader(udaType));
+			upnpService.getControlPoint().search(new DeviceTypeHeader(udaType));
 		}
 	}
 	
@@ -86,17 +86,38 @@ public class ClientService extends Service {
 	
 	class Connect extends Thread {
 		
-		public Socket socket = null;	
+		private Socket socket = null;
+		private Scanner scanner = null;
+		
+		private void stopConnect() {
+			serverAddress = null;
+			isConnect = false;
+			if (scanner != null)
+				scanner.close();
+			try {
+				if (dos != null)
+					dos.close();
+				if (socket != null)
+					socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			serverAddress = null;
+			if (listener != null)
+				listener.onFail();
+		}
 		
 		@Override
 		public void run() {
 			super.run();
 			try {
+				if (serverAddress == null)
+					return;
 				Logger.w(TAG, "Connect server: ", serverAddress);
 				socket = new Socket(serverAddress, Config.PORT);
 				isConnect = true;
 				dos = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-				Scanner scanner = new Scanner(new InputStreamReader(socket.getInputStream()));
+				scanner = new Scanner(new InputStreamReader(socket.getInputStream()));
 				scanner.useDelimiter("\n");
 				if (listener != null)
 					listener.onSuccess();
@@ -109,21 +130,16 @@ public class ClientService extends Service {
 						msg.obj = message;
 						msg.sendToTarget();
 					} else {
-						serverAddress = null;
-						isConnect = false;
-						scanner.close();
-						dos.close();
+						stopConnect();
 						Logger.e(TAG , "Error connect");
 					}
 				}
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
-				if (listener != null)
-					listener.onFail();
+				stopConnect();
 			} catch (IOException e) {
 				e.printStackTrace();
-				if (listener != null)
-					listener.onFail();
+				stopConnect();
 			}
 		}
 	}

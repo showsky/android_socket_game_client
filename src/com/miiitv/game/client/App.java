@@ -2,6 +2,7 @@ package com.miiitv.game.client;
 
 import org.teleal.cling.android.AndroidUpnpService;
 import org.teleal.cling.android.AndroidUpnpServiceImpl;
+
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,7 +25,7 @@ public class App extends Application {
 	private HandlerThread handlerThread = null;
 	public EventHandler eventHandler = null;
 	public ClientService clientService = null;
-	private BrowseRegistryListener registryListener = new BrowseRegistryListener();
+	public BrowseRegistryListener registryListener = new BrowseRegistryListener();
 	private ServiceConnection upnpServiceConnection = new ServiceConnection() {
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
@@ -36,7 +37,6 @@ public class App extends Application {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			Logger.i(TAG, "Upnp onServiceConnected()");
 			upnpService = (AndroidUpnpService) service;
-			upnpService.getRegistry().addListener(registryListener);
 		}
 	};
 	private ServiceConnection clientServiceConnection = new ServiceConnection() {

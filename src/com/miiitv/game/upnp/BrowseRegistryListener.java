@@ -38,13 +38,6 @@ public class BrowseRegistryListener implements RegistryListener {
 	@Override
 	public void remoteDeviceAdded(Registry reg, RemoteDevice device) {
 		Logger.i(TAG, "remoteDeviceAdded() ", device.getDisplayString(), " ip: ", device.getIdentity().getDescriptorURL().getHost());
-		String serverAddress = device.getIdentity().getDescriptorURL().getHost();
-		Message message = App.getInstance().eventHandler.obtainMessage();
-		message.what = EventType.TYPE_CONNECT;
-		message.obj = String.valueOf(serverAddress);
-		message.sendToTarget();
-		
-		//reg.shutdown();
 	}
 
 	@Override
@@ -63,5 +56,12 @@ public class BrowseRegistryListener implements RegistryListener {
 	@Override
 	public void remoteDeviceUpdated(Registry reg, RemoteDevice device) {
 		Logger.i(TAG, "remoteDeviceUpdated() ", device.getDisplayString());
+		if (App.getInstance().clientService.serverAddress == null) {
+			String serverAddress = device.getIdentity().getDescriptorURL().getHost();
+			Message message = App.getInstance().eventHandler.obtainMessage();
+			message.what = EventType.TYPE_CONNECT;
+			message.obj = String.valueOf(serverAddress);
+			message.sendToTarget();
+		}
 	}
 }

@@ -19,4 +19,6 @@
 	<string name="rank_sync_message">尋找主機中</string>
 	<string name="rank_sync_success">進入遊戲</string>
 	<string name="rank_sync_error">尋找失敗</string>
+	
+	<string name="start_disconnect">斷線</string>
 </resources>
