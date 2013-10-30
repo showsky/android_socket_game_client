@@ -6,9 +6,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayout;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.RelativeLayout;
 
 import com.miiicasa.game.client.adapter.OptionsAdapter;
@@ -20,7 +20,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	
 	private final static String TAG = "StartActivity";
 	private Context mContext = null;
-	private GridLayout grid = null;
+	private GridView grid = null;
 	private RelativeLayout layout = null;
 	private OptionsAdapter adapter = null;
 	private ProgressDialog loading = null;
@@ -32,8 +32,9 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 		Logger.i(TAG, "onCreate");
 		setContentView(R.layout.start);
 		mContext = this;
-		grid = (GridLayout) findViewById(R.id.start_list);
+		grid = (GridView) findViewById(R.id.start_list);
 		layout = (RelativeLayout) findViewById(R.id.start);
+		waitLoad();
 	}
 	
 	private void startShock() {
@@ -49,7 +50,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	private void waitLoad() {
 		loading = new ProgressDialog(mContext);
 		loading.setTitle(R.string.start_wait_title);
-		loading.setMessage(getString(R.string.start_wait_message));
+		loading.setMessage(getString(R.string.start_wait_message_1));
 		loading.setCancelable(false);
 		loading.setCanceledOnTouchOutside(false);
 		loading.show();
@@ -86,8 +87,11 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	}
 
 	@Override
-	public void start(JSONArray options) {
-		optionsJSON = options;
+	public void start() {
+		if (loading != null && loading.isShowing())
+			loading.dismiss();
+		adapter = new OptionsAdapter(mContext, optionsJSON);
+		grid.setAdapter(adapter);
 	}
 
 	@Override
@@ -97,17 +101,14 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 
 	@Override
 	public void unlock() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void end() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -117,7 +118,14 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	@Override
 	public void onFail() {
 		Logger.i(TAG, "onFail()");
+		if (loading != null && loading.isShowing())
+			loading.dismiss();
 		App.getInstance().upnpService.getControlPoint().getRegistry().removeListener(App.getInstance().registryListener);
 		finish();
+	}
+
+	@Override
+	public void options(JSONArray options) {
+		optionsJSON = options;
 	}
 }

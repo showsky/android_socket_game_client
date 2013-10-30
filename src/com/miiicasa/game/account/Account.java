@@ -1,5 +1,8 @@
 package com.miiicasa.game.account;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -84,5 +87,21 @@ public class Account {
 		} else {
 			return true;
 		}
+	}
+	
+	@Override
+	public String toString() {
+		JSONObject json = new JSONObject();
+		try {
+			json.put("facebook_id", getFacebookID());
+			json.put("facebook_name", getFacebokName());
+			if (rank != null) {
+				json.put("win", rank.win);
+				json.put("lose", rank.lost);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return json.toString();
 	}
 }

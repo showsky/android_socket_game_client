@@ -36,11 +36,16 @@ public class EventHandler extends Handler {
 				String log = (String) msg.obj;
 				Toast.makeText(App.getInstance(), log, Toast.LENGTH_SHORT).show();
 				break;
-			case EventType.TYPE_START:
+			case EventType.TYPE_OPTIONS:
 				Logger.d(TAG, "EventType: EventType.TYPE_START");
 				JSONArray options = (JSONArray) msg.obj;
 				if (startListener != null)
-					startListener.start(options);
+					startListener.options(options);
+				break;
+			case EventType.TYPE_START:
+				Logger.d(TAG, "EventType: EventType.TYPE_START");
+				if (startListener != null)
+					startListener.start();
 				break;
 			case EventType.TYPE_LOCK:
 				Logger.d(TAG, "EventType: EventType.TYPE_LOCK");
