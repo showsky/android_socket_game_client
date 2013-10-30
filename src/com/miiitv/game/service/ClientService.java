@@ -154,10 +154,7 @@ public class ClientService extends Service {
 					if (scanner.hasNext()) {
 						String message = scanner.nextLine();
 						Logger.d(TAG, "Receive: ", message);
-						Message msg = App.getInstance().eventHandler.obtainMessage();
-						msg.what = EventType.TYPE_DEBUG;
-						msg.obj = message;
-						msg.sendToTarget();
+						dispath(message);
 					} else {
 						stopConnect();
 						Logger.e(TAG , "Error connect");
