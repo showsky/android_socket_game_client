@@ -33,7 +33,6 @@ public class ClientService extends Service {
 	private final static String TAG = "ClientService";
 	private LocalBinder binder = new LocalBinder();
 	public String serverAddress = null;
-	private PrintStream ps = null;
 	public boolean isConnect = false;
 	private Connect connect = null;
 	public ProgressDialog loading = null;
@@ -75,12 +74,8 @@ public class ClientService extends Service {
 	public void disConnectServer() {
 		if (connect.socket.isConnected()) {
 			Logger.w(TAG, "Close connect server");
-			try {
-				ps.close();
-				connect.socket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			connect.stopConnect();
+			connect = null;
 			serverAddress = null;
 			isConnect = false;
 		}
@@ -89,7 +84,8 @@ public class ClientService extends Service {
 	class Connect extends Thread {
 		
 		private Socket socket = null;
-		private Scanner scanner = null;
+		public Scanner scanner = null;
+		public PrintStream ps = null;
 		
 		private void stopConnect() {
 			serverAddress = null;
@@ -143,7 +139,7 @@ public class ClientService extends Service {
 				Logger.w(TAG, "Connect server: ", serverAddress);
 				socket = new Socket(serverAddress, Config.PORT);
 				isConnect = true;
-				ps = new PrintStream(socket.getOutputStream());
+				ps  = new PrintStream(socket.getOutputStream());
 				ps.println(App.getInstance().getAccount().toString());
 				ps.flush();
 				scanner = new Scanner(new InputStreamReader(socket.getInputStream()));

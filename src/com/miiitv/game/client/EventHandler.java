@@ -1,6 +1,6 @@
 package com.miiitv.game.client;
 
-import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -38,7 +38,7 @@ public class EventHandler extends Handler {
 				break;
 			case EventType.TYPE_OPTIONS:
 				Logger.d(TAG, "EventType: EventType.TYPE_START");
-				JSONArray options = (JSONArray) msg.obj;
+				JSONObject options = (JSONObject) msg.obj;
 				if (startListener != null)
 					startListener.options(options);
 				break;

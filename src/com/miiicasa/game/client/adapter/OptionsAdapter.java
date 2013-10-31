@@ -1,7 +1,7 @@
 package com.miiicasa.game.client.adapter;
 
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,7 +16,7 @@ public class OptionsAdapter extends BaseAdapter {
 
 	private final static String TAG = "OptionsAdapter";
 	private LayoutInflater inflater = null;
-	private JSONArray optionsJSON = null;
+	private JSONObject optionsJSON = null;
 	
 	public class ViewHolder {
 		
@@ -24,7 +24,7 @@ public class OptionsAdapter extends BaseAdapter {
 	}
 	
 	
-	public OptionsAdapter(Context context, JSONArray optionsJSON) {
+	public OptionsAdapter(Context context, JSONObject optionsJSON) {
 		this.optionsJSON = optionsJSON;
 		inflater = LayoutInflater.from(context);
 	}
@@ -56,7 +56,7 @@ public class OptionsAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		try {
-			holder.answerTextView.setText(optionsJSON.getString(position));
+			holder.answerTextView.setText(optionsJSON.getString(String.valueOf(position + 1)));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

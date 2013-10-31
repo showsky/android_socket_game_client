@@ -1,6 +1,6 @@
 package com.miiitv.game.client.gui;
 
-import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -24,7 +24,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	private RelativeLayout layout = null;
 	private OptionsAdapter adapter = null;
 	private ProgressDialog loading = null;
-	private JSONArray optionsJSON = null;
+	private JSONObject optionsJSON = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +125,11 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	}
 
 	@Override
-	public void options(JSONArray options) {
+	public void options(JSONObject options) {
 		optionsJSON = options;
+	}
+
+	@Override
+	public void win() {
 	}
 }
