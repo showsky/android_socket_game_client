@@ -61,13 +61,17 @@ public class ClientService extends Service {
 		connect.start();
 	}
 	
-	public void startUpnp() {
-		if (App.getInstance().upnpService != null) {
-			Logger.d(TAG, "Start Upnp");
-			AndroidUpnpService upnpService = App.getInstance().upnpService;
-			upnpService.getRegistry().addListener(App.getInstance().registryListener);
-			UDADeviceType udaType = new UDADeviceType(UpnpConfig.TYPE_NAME, UpnpConfig.TYPE_VERSION);
-			upnpService.getControlPoint().search(new DeviceTypeHeader(udaType));
+	public void startUpnp(boolean isMock) {
+		if (isMock) {
+			connectServer(Config.SERVER_IP);
+		} else {
+			if (App.getInstance().upnpService != null) {
+				Logger.d(TAG, "Start Upnp");
+				AndroidUpnpService upnpService = App.getInstance().upnpService;
+				upnpService.getRegistry().addListener(App.getInstance().registryListener);
+				UDADeviceType udaType = new UDADeviceType(UpnpConfig.TYPE_NAME, UpnpConfig.TYPE_VERSION);
+				upnpService.getControlPoint().search(new DeviceTypeHeader(udaType));
+			}
 		}
 	}
 	

@@ -12,7 +12,7 @@ public class Config {
 	public final static String API_URL = "http://jexpoyi.com" + YAHOO;
 	
 	public final static int PORT = 2222;
-	public final static String SERVER_IP = "192.168.0.100";
+	public final static String SERVER_IP = "192.168.0.104";
 
 	public final static boolean PROXY = false;
 	public final static String PROXY_IP = "192.168.0.100";

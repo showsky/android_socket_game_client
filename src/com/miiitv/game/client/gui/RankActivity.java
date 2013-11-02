@@ -177,7 +177,7 @@ public class RankActivity extends Activity implements OnClickListener, ConnectLi
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			boolean flag = true;
-			App.getInstance().clientService.startUpnp();
+			App.getInstance().clientService.startUpnp(true);
 			return flag;
 		}
 		
