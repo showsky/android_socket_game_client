@@ -4,11 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/choice_bg" >
-    <GridView android:id="@+id/start_list"
+
+    <GridView
+        android:id="@+id/start_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:horizontalSpacing="20dp"
         android:numColumns="2"
-        android:horizontalSpacing="30dp"
-        android:verticalSpacing="30dp">
+        android:verticalSpacing="20dp" >
     </GridView>
+
 </RelativeLayout>
