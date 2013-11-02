@@ -26,7 +26,6 @@ public class OptionsAdapter extends BaseAdapter {
 	
 	
 	public OptionsAdapter(Context context, JSONObject optionsJSON) {
-		Logger.d("showsky", optionsJSON.toString());
 		this.optionsJSON = optionsJSON;
 		inflater = LayoutInflater.from(context);
 	}

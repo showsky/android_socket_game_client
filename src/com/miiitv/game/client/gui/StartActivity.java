@@ -186,7 +186,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 				JSONObject json = new JSONObject();
 				try {
 					json.put("type", EventType.TYPE_ANSWER);
-					json.put("data", position);
+					json.put("data", position + 1);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -213,7 +213,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
         float delta = mAccelCurrent - mAccelLast;
         mAccel = mAccel * 0.9f + delta; // perform low-cut filter
 
-        if (mAccel > 8) {
+        if (mAccel > 12) {
         	Logger.d(TAG, "Accel: ", String.valueOf(mAccel));
         	JSONObject json = new JSONObject();
         	try {
