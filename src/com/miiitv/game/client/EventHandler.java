@@ -37,7 +37,7 @@ public class EventHandler extends Handler {
 				Toast.makeText(App.getInstance(), log, Toast.LENGTH_SHORT).show();
 				break;
 			case EventType.TYPE_OPTIONS:
-				Logger.d(TAG, "EventType: EventType.TYPE_START");
+				Logger.d(TAG, "EventType: EventType.TYPE_OPTIONS");
 				JSONObject options = (JSONObject) msg.obj;
 				if (startListener != null)
 					startListener.options(options);

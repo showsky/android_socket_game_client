@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.miiitv.game.client.Logger;
 import com.miiitv.game.client.R;
 
 public class OptionsAdapter extends BaseAdapter {
@@ -25,6 +26,7 @@ public class OptionsAdapter extends BaseAdapter {
 	
 	
 	public OptionsAdapter(Context context, JSONObject optionsJSON) {
+		Logger.d("showsky", optionsJSON.toString());
 		this.optionsJSON = optionsJSON;
 		inflater = LayoutInflater.from(context);
 	}

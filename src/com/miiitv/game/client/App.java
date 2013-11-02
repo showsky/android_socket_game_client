@@ -75,7 +75,6 @@ public class App extends Application {
 		bindService(intent, clientServiceConnection, Context.BIND_AUTO_CREATE);
 	}
 	
-	
 	private void initHandler() {
 		if (handlerThread == null) {
 			handlerThread = new HandlerThread(TAG);

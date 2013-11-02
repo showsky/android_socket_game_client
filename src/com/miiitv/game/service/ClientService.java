@@ -18,6 +18,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -120,7 +121,7 @@ public class ClientService extends Service {
 				switch (type) {
 					case EventType.TYPE_OPTIONS:
 						Logger.i(TAG, "Type: EventType.TYPE_OPTIONS");
-						message.obj = json.getJSONArray("data");
+						message.obj = json.getJSONObject("data");
 						break;
 					case EventType.TYPE_START:
 					case EventType.TYPE_LOCK:

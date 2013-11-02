@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.HandlerThread;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.GridView;
@@ -60,6 +61,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	protected void onResume() {
 		super.onResume();
 		App.getInstance().clientService.listener = this;
+		App.getInstance().eventHandler.startListener = this;
 		Logger.i(TAG, "onResume");
 	}
 	
@@ -84,35 +86,47 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 		super.onPause();
 		Logger.i(TAG, "onPause");
 		App.getInstance().clientService.listener = null;
+		App.getInstance().eventHandler.startListener = null;
 	}
 
 	@Override
 	public void start() {
-		if (loading != null && loading.isShowing())
-			loading.dismiss();
-		adapter = new OptionsAdapter(mContext, optionsJSON);
-		grid.setAdapter(adapter);
+		Logger.i(TAG, "start()");
+		grid.post(new Runnable() {
+			@Override
+			public void run() {
+				if (loading != null && loading.isShowing())
+					loading.dismiss();
+				adapter = new OptionsAdapter(mContext, optionsJSON);
+				grid.setAdapter(adapter);
+			}
+		});
 	}
 
 	@Override
 	public void lock() {
+		Logger.i(TAG, "lock()");
 		startShock();
 	}
 
 	@Override
 	public void unlock() {
+		Logger.i(TAG, "unlock()");
 	}
 
 	@Override
 	public void end() {
+		Logger.i(TAG, "end()");
 	}
 
 	@Override
 	public void close() {
+		Logger.i(TAG, "close()");
 	}
 
 	@Override
 	public void onSuccess() {
+		Logger.i(TAG, "onSuccess");
 	}
 
 	@Override
