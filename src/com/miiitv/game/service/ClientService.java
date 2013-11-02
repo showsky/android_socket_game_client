@@ -18,7 +18,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -60,6 +59,11 @@ public class ClientService extends Service {
 		this.serverAddress = serverAddress;
 		connect = new Connect();
 		connect.start();
+	}
+	
+	public void sendMessage(String message) {
+		if (connect != null)
+			connect.ps.println(message);
 	}
 	
 	public void startUpnp(boolean isMock) {

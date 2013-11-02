@@ -1,23 +1,31 @@
 package com.miiitv.game.client.gui;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.HandlerThread;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 
 import com.miiicasa.game.client.adapter.OptionsAdapter;
 import com.miiitv.game.client.App;
+import com.miiitv.game.client.EventType;
 import com.miiitv.game.client.Logger;
 import com.miiitv.game.client.R;
 
-public class StartActivity extends Activity implements StartListener, ConnectListener {
+public class StartActivity extends Activity implements StartListener, ConnectListener, SensorEventListener {
 	
 	private final static String TAG = "StartActivity";
 	private Context mContext = null;
@@ -26,6 +34,11 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	private OptionsAdapter adapter = null;
 	private ProgressDialog loading = null;
 	private JSONObject optionsJSON = null;
+	private SensorManager manager = null;
+	private Sensor sensor = null;
+	private float mAccelLast = 0;
+	private float mAccelCurrent = 0;
+	private float mAccel = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +46,32 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 		Logger.i(TAG, "onCreate");
 		setContentView(R.layout.start);
 		mContext = this;
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        manager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		grid = (GridView) findViewById(R.id.start_list);
 		layout = (RelativeLayout) findViewById(R.id.start);
 		waitLoad();
 	}
 	
+	private final void register() {
+        manager.registerListener(this, sensor,
+                SensorManager.SENSOR_DELAY_NORMAL);
+    }
+	
+	private final void unregister() {
+		manager.unregisterListener(this);
+	}
+	
 	private void startShock() {
-		layout.setBackground(getResources().getDrawable(R.drawable.choice_bg));
+		register();
+		layout.setBackground(getResources().getDrawable(R.drawable.bell_bg));
 		grid.setVisibility(View.GONE);
 	}
 	
 	private void stopShock() {
-		layout.setBackground(getResources().getDrawable(R.drawable.bell_bg));
+		unregister();
+		layout.setBackground(getResources().getDrawable(R.drawable.choice_bg));
 		grid.setVisibility(View.VISIBLE);
 	}
 	
@@ -97,8 +124,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 			public void run() {
 				if (loading != null && loading.isShowing())
 					loading.dismiss();
-				adapter = new OptionsAdapter(mContext, optionsJSON);
-				grid.setAdapter(adapter);
+				startShock();
 			}
 		});
 	}
@@ -106,12 +132,17 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	@Override
 	public void lock() {
 		Logger.i(TAG, "lock()");
-		startShock();
 	}
 
 	@Override
 	public void unlock() {
 		Logger.i(TAG, "unlock()");
+		grid.post(new Runnable() {
+			@Override
+			public void run() {
+				stopShock();
+			}
+		});
 	}
 
 	@Override
@@ -140,10 +171,57 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 
 	@Override
 	public void options(JSONObject options) {
+		Logger.d(TAG, "options() ", options.toString());
 		optionsJSON = options;
+		grid.post(new Runnable() {
+			@Override
+			public void run() {
+				adapter = new OptionsAdapter(mContext, optionsJSON);
+				grid.setAdapter(adapter);
+			}
+		});
+		grid.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+				JSONObject json = new JSONObject();
+				try {
+					json.put("type", EventType.TYPE_ANSWER);
+					json.put("data", position);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				App.getInstance().clientService.sendMessage(json.toString());
+			}
+		});
 	}
 
 	@Override
 	public void win() {
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+        mAccelLast = mAccelCurrent;
+        mAccelCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
+        float delta = mAccelCurrent - mAccelLast;
+        mAccel = mAccel * 0.9f + delta; // perform low-cut filter
+
+        if (mAccel > 8) {
+        	Logger.d(TAG, "Accel: ", String.valueOf(mAccel));
+        	JSONObject json = new JSONObject();
+        	try {
+				json.put("type", EventType.TYPE_SHOCK);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+        	App.getInstance().clientService.sendMessage(json.toString());
+        }
 	}
 }
