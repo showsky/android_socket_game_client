@@ -183,6 +183,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 		grid.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+				Logger.d(TAG, "onItemClick: ", String.valueOf(position));
 				JSONObject json = new JSONObject();
 				try {
 					json.put("type", EventType.TYPE_ANSWER);

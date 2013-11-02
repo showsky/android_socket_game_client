@@ -62,8 +62,10 @@ public class ClientService extends Service {
 	}
 	
 	public void sendMessage(String message) {
-		if (connect != null)
+		if (connect != null) {
+			Logger.d(TAG, "Send message: ", message);
 			connect.ps.println(message);
+		}
 	}
 	
 	public void startUpnp(boolean isMock) {
