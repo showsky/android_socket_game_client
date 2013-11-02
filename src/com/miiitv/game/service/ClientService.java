@@ -115,6 +115,7 @@ public class ClientService extends Service {
 				message.what = type;
 				switch (type) {
 					case EventType.TYPE_OPTIONS:
+						Logger.i(TAG, "Type: EventType.TYPE_OPTIONS");
 						message.obj = json.getJSONArray("data");
 						break;
 					case EventType.TYPE_START:
@@ -139,9 +140,8 @@ public class ClientService extends Service {
 				Logger.w(TAG, "Connect server: ", serverAddress);
 				socket = new Socket(serverAddress, Config.PORT);
 				isConnect = true;
-				ps  = new PrintStream(socket.getOutputStream());
+				ps = new PrintStream(socket.getOutputStream());
 				ps.println(App.getInstance().getAccount().toString());
-				ps.flush();
 				scanner = new Scanner(new InputStreamReader(socket.getInputStream()));
 				scanner.useDelimiter("\n");
 				if (listener != null)

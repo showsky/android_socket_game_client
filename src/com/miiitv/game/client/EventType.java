@@ -16,5 +16,6 @@ public class EventType {
 	
 	//	send
 	public final static int TYPE_SHOCK = 0x1001;
-	public final static int TYPE_ANSWER = 0x102;
+	public final static int TYPE_ANSWER = 0x1002;
+	public final static int TYPE_JOIN = 0x1003;
 }

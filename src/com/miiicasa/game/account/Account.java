@@ -3,6 +3,8 @@ package com.miiicasa.game.account;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.miiitv.game.client.EventType;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -93,12 +95,15 @@ public class Account {
 	public String toString() {
 		JSONObject json = new JSONObject();
 		try {
-			json.put("facebook_id", getFacebookID());
-			json.put("facebook_name", getFacebokName());
+			json.put("type", EventType.TYPE_JOIN);
+			JSONObject dataJSON = new JSONObject();
+			dataJSON.put("facebook_id", getFacebookID());
+			dataJSON.put("facebook_name", getFacebokName());
 			if (rank != null) {
-				json.put("win", rank.win);
-				json.put("lose", rank.lost);
+				dataJSON.put("win", rank.win);
+				dataJSON.put("lose", rank.lost);
 			}
+			json.putOpt("data", dataJSON);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
