@@ -5,10 +5,6 @@ import org.teleal.cling.model.meta.RemoteDevice;
 import org.teleal.cling.registry.Registry;
 import org.teleal.cling.registry.RegistryListener;
 
-import android.os.Message;
-
-import com.miiitv.game.client.App;
-import com.miiitv.game.client.EventType;
 import com.miiitv.game.client.Logger;
 
 public class BrowseRegistryListener implements RegistryListener {

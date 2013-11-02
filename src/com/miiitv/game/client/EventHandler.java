@@ -1,7 +1,5 @@
 package com.miiitv.game.client;
 
-import org.json.JSONObject;
-
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -35,36 +33,6 @@ public class EventHandler extends Handler {
 				Logger.d(TAG, "EventType: EventType.TYPE_DEBUG");
 				String log = (String) msg.obj;
 				Toast.makeText(App.getInstance(), log, Toast.LENGTH_SHORT).show();
-				break;
-			case EventType.TYPE_OPTIONS:
-				Logger.d(TAG, "EventType: EventType.TYPE_OPTIONS");
-				JSONObject options = (JSONObject) msg.obj;
-				if (startListener != null)
-					startListener.options(options);
-				break;
-			case EventType.TYPE_START:
-				Logger.d(TAG, "EventType: EventType.TYPE_START");
-				if (startListener != null)
-					startListener.start();
-				break;
-			case EventType.TYPE_LOCK:
-				Logger.d(TAG, "EventType: EventType.TYPE_LOCK");
-				if (startListener != null)
-					startListener.lock();
-				break;
-			case EventType.TYPE_UNLOCK:
-				Logger.d(TAG, "EventType: EventType.TYPE_UNLOCK");
-				if (startListener != null)
-					startListener.unlock();
-				break;
-			case EventType.TYPE_END:
-				Logger.d(TAG, "EventType: EventType.TYPE_END");
-				if (startListener != null)
-					startListener.end();
-				break;
-			case EventType.TYPE_CLOSE:
-				if (startListener != null)
-					startListener.close();
 				break;
 		}
 	}

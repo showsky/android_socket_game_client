@@ -86,7 +86,7 @@ public class RankActivity extends Activity implements OnClickListener, ConnectLi
 	protected void onResume() {
 		super.onResume();
 		Logger.i(TAG, "onResume");
-		App.getInstance().clientService.listener = this;
+		App.getInstance().clientService.connectListener = this;
 		animTop.start();
 		animButtom.start();
 	}
@@ -104,7 +104,7 @@ public class RankActivity extends Activity implements OnClickListener, ConnectLi
 	protected void onPause() {
 		super.onPause();
 		Logger.i(TAG, "onPause");
-		App.getInstance().clientService.listener = null;
+		App.getInstance().clientService.connectListener = null;
 		animTop.stop();
 		animButtom.stop();
 	}
@@ -158,6 +158,10 @@ public class RankActivity extends Activity implements OnClickListener, ConnectLi
 	
 	class PrePare extends AsyncTask<Void, Void, Boolean> {
 		
+		public PrePare() {
+			Logger.d(TAG, "Start PrePare asyncTask");
+		}
+		
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -179,11 +183,6 @@ public class RankActivity extends Activity implements OnClickListener, ConnectLi
 			boolean flag = true;
 			App.getInstance().clientService.startUpnp(true);
 			return flag;
-		}
-		
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
 		}
 	}
 }

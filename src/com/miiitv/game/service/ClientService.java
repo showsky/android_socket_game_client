@@ -18,7 +18,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.Message;
 import android.text.TextUtils;
 
 import com.miiitv.game.client.App;
@@ -27,6 +26,7 @@ import com.miiitv.game.client.Logger;
 import com.miiitv.game.client.config.Config;
 import com.miiitv.game.client.config.UpnpConfig;
 import com.miiitv.game.client.gui.ConnectListener;
+import com.miiitv.game.client.gui.StartListener;
 
 public class ClientService extends Service {
 	
@@ -36,7 +36,8 @@ public class ClientService extends Service {
 	public boolean isConnect = false;
 	private Connect connect = null;
 	public ProgressDialog loading = null;
-	public ConnectListener listener = null;
+	public ConnectListener connectListener = null;
+	public StartListener startListener = null;
 	
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -99,6 +100,7 @@ public class ClientService extends Service {
 		public PrintStream ps = null;
 		
 		private void stopConnect() {
+			Logger.i(TAG, "stopConnect()");
 			serverAddress = null;
 			isConnect = false;
 			if (scanner != null)
@@ -112,8 +114,8 @@ public class ClientService extends Service {
 				e.printStackTrace();
 			}
 			serverAddress = null;
-			if (listener != null)
-				listener.onFail();
+			if (connectListener != null)
+				connectListener.onFail();
 		}
 		
 		private void dispath(String receive) {
@@ -122,21 +124,37 @@ public class ClientService extends Service {
 			try {
 				JSONObject json = new JSONObject(receive);
 				int type = json.getInt("type");
-				Message message = App.getInstance().eventHandler.obtainMessage();
-				message.what = type;
 				switch (type) {
 					case EventType.TYPE_OPTIONS:
-						Logger.i(TAG, "Type: EventType.TYPE_OPTIONS");
-						message.obj = json.getJSONObject("data");
+						Logger.d(TAG, "Dispath: EventType.TYPE_OPTIONS");
+						 JSONObject options = json.getJSONObject("data");
+						 if (startListener != null)
+							 startListener.options(options);
 						break;
 					case EventType.TYPE_START:
+						Logger.d(TAG, "Dispath: EventType.TYPE_START");
+						if (startListener != null)
+							startListener.start();
+						break;
 					case EventType.TYPE_LOCK:
+						Logger.d(TAG, "Dispath: EventType.TYPE_LOCK");
+						if (startListener != null)
+							startListener.lock();
+						break;
 					case EventType.TYPE_UNLOCK:
+						Logger.d(TAG, "Dispath: EventType.TYPE_UNLOCK");
+						if (startListener != null)
+							startListener.unlock();
+						break;
 					case EventType.TYPE_END:
+						Logger.d(TAG, "Dispath: EventType.TYPE_END");
+						if (startListener != null)
+							startListener.end();
+						break;
 					case EventType.TYPE_CLOSE:
+						Logger.d(TAG, "Dispath: EventType.TYPE_CLOSE");
 						break;
 				}
-				message.sendToTarget();
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -155,8 +173,8 @@ public class ClientService extends Service {
 				ps.println(App.getInstance().getAccount().toString());
 				scanner = new Scanner(new InputStreamReader(socket.getInputStream()));
 				scanner.useDelimiter("\n");
-				if (listener != null)
-					listener.onSuccess();
+				if (connectListener != null)
+					connectListener.onSuccess();
 				while (isConnect) {
 					if (scanner.hasNext()) {
 						String message = scanner.nextLine();

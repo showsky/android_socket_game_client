@@ -11,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -35,10 +36,12 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	private ProgressDialog loading = null;
 	private JSONObject optionsJSON = null;
 	private SensorManager manager = null;
+	private Vibrator myVibrator = null;
 	private Sensor sensor = null;
 	private float mAccelLast = 0;
 	private float mAccelCurrent = 0;
 	private float mAccel = 0;
+	private boolean keyLock = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
         sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		grid = (GridView) findViewById(R.id.start_list);
 		layout = (RelativeLayout) findViewById(R.id.start);
+		myVibrator = (Vibrator) getApplication().getSystemService(Context.VIBRATOR_SERVICE);
 		waitLoad();
 	}
 	
@@ -87,9 +91,9 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	@Override
 	protected void onResume() {
 		super.onResume();
-		App.getInstance().clientService.listener = this;
-		App.getInstance().eventHandler.startListener = this;
 		Logger.i(TAG, "onResume");
+		App.getInstance().clientService.connectListener = this;
+		App.getInstance().clientService.startListener = this;
 	}
 	
 	@Override
@@ -112,18 +116,19 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	protected void onPause() {
 		super.onPause();
 		Logger.i(TAG, "onPause");
-		App.getInstance().clientService.listener = null;
-		App.getInstance().eventHandler.startListener = null;
+		App.getInstance().clientService.connectListener = null;
+		App.getInstance().clientService.startListener = null;
 	}
 
 	@Override
 	public void start() {
 		Logger.i(TAG, "start()");
-		grid.post(new Runnable() {
+		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				if (loading != null && loading.isShowing())
 					loading.dismiss();
+				keyLock = false;
 				startShock();
 			}
 		});
@@ -132,15 +137,22 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	@Override
 	public void lock() {
 		Logger.i(TAG, "lock()");
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				layout.setBackground(getResources().getDrawable(R.drawable.lock_bg));
+			}
+		});
 	}
 
 	@Override
 	public void unlock() {
 		Logger.i(TAG, "unlock()");
-		grid.post(new Runnable() {
+		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				stopShock();
+				myVibrator.vibrate(2000);
 			}
 		});
 	}
@@ -173,7 +185,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	public void options(JSONObject options) {
 		Logger.d(TAG, "options() ", options.toString());
 		optionsJSON = options;
-		grid.post(new Runnable() {
+		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				adapter = new OptionsAdapter(mContext, optionsJSON);
@@ -184,6 +196,8 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 				Logger.d(TAG, "onItemClick: ", String.valueOf(position));
+				if (keyLock)
+					return;
 				JSONObject json = new JSONObject();
 				try {
 					json.put("type", EventType.TYPE_ANSWER);
@@ -192,6 +206,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 					e.printStackTrace();
 				}
 				App.getInstance().clientService.sendMessage(json.toString());
+				keyLock = true;
 			}
 		});
 	}
@@ -210,7 +225,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
         float y = event.values[1];
         float z = event.values[2];
         mAccelLast = mAccelCurrent;
-        mAccelCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
+        mAccelCurrent = (float) Math.sqrt(x * x + y * y + z * z);
         float delta = mAccelCurrent - mAccelLast;
         mAccel = mAccel * 0.9f + delta; // perform low-cut filter
 
