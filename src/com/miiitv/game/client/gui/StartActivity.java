@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.miiicasa.game.client.adapter.OptionsAdapter;
 import com.miiitv.game.client.App;
@@ -129,6 +130,7 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 				if (loading != null && loading.isShowing())
 					loading.dismiss();
 				keyLock = false;
+				Toast.makeText(mContext, R.string.start_start, Toast.LENGTH_SHORT).show();
 				startShock();
 			}
 		});
@@ -175,10 +177,15 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 	@Override
 	public void onFail() {
 		Logger.i(TAG, "onFail()");
-		if (loading != null && loading.isShowing())
-			loading.dismiss();
-		App.getInstance().upnpService.getControlPoint().getRegistry().removeListener(App.getInstance().registryListener);
-		finish();
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (loading != null && loading.isShowing())
+					loading.dismiss();
+				App.getInstance().upnpService.getControlPoint().getRegistry().removeListener(App.getInstance().registryListener);
+				finish();
+			}
+		});
 	}
 
 	@Override
@@ -213,6 +220,13 @@ public class StartActivity extends Activity implements StartListener, ConnectLis
 
 	@Override
 	public void win() {
+		Logger.d(TAG, "win()");
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				Toast.makeText(mContext, R.string.start_win, Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 
 	@Override

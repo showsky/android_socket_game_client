@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.miiitv.game.client.R;
@@ -21,6 +22,7 @@ public class OptionsAdapter extends BaseAdapter {
 	public class ViewHolder {
 		
 		public TextView answerTextView = null;
+		public LinearLayout linear = null;
 	}
 	
 	
@@ -50,6 +52,7 @@ public class OptionsAdapter extends BaseAdapter {
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.answer, parent, false);
 			holder = new ViewHolder();
+			holder.linear = (LinearLayout) convertView.findViewById(R.id.answer_linear);
 			holder.answerTextView = (TextView) convertView.findViewById(R.id.answer);
 			convertView.setTag(holder);
 		} else {

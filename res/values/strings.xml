@@ -24,4 +24,6 @@
 	<string name="start_wait_title">注意</string>
 	<string name="start_wait_message_1">準備選項中</string>
 	<string name="start_wait_message_2">等待開始中</string>
+	<string name="start_start">開始搶答</string>
+	<string name="start_win">正確答案</string>
 </resources>
