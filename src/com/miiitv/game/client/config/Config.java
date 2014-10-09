@@ -7,12 +7,12 @@ public class Config {
 
 	public final static boolean API_READY = false;
 
-	public final static String FONT_FACE = "font.ttf";
+	public final static String FONT_FACE = "font.ttf"; 
 	public final static String YAHOO = "/yahoo_hackathon_api";
-	public final static String API_URL = "http://192.168.0.101:8888" + YAHOO;
+	public final static String API_URL = "http://192.168.0.102:8888" + YAHOO;
 	
 	public final static int PORT = 2222;
-	public final static String SERVER_IP = "192.168.0.104";
+	public final static String SERVER_IP = "192.168.0.107";
 
 	public final static boolean PROXY = false;
 	public final static String PROXY_IP = "192.168.0.100";
